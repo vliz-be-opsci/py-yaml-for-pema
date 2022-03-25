@@ -1,0 +1,21 @@
+# Checks if the master branch can properly build (including dependencies, docs, tests, checks)
+name: Checking Master Branch
+on:
+  push:
+    branches:
+      - master
+jobs:
+  check-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        make init-dev
+    - name: Build package
+      run: |
+        make build
