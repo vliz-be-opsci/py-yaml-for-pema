@@ -7,10 +7,10 @@
 
 """
 
-from .tool import MyModel
+from .tool import ParameterDescription, read
 import logging
 
-__all__ = ['MyModel']
+__all__ = ['read', 'ParameterDescription']
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())

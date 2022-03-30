@@ -1,0 +1,17 @@
+This textfile just has interlaced yaml that will accumulate to a sensible ParameterDescription ParameterDescription
+We do this by marking yaml files at the start with #=
+
+One should start with an overarching structure
+#= about:
+#=   - description: What this is about
+#=   - author:
+#=      - name: Marc Portier
+#= parameters:
+
+
+after which we can just describe one parameter a time
+#=     firstparam:
+#=       - description: the first param
+
+
+Thanks for reading up to here!

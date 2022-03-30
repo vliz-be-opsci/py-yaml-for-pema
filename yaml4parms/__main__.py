@@ -10,12 +10,11 @@ log = logging.getLogger(__name__)
 def get_arg_parser():
     """ Defines the arguments to this script by using Python's [argparse](https://docs.python.org/3/library/argparse.html)
     """
-    parser = argparse.ArgumentParser(description='tool to mix yaml structured schema description with actual text based parameters files',
+    parser = argparse.ArgumentParser(description='exposes yaml structured parameters information',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument(
-        '-l',
-        '--logconf',
+        '-l', '--logconf',
         type=str,
         action='store',
         help='location of the logging config (yml) to use',
@@ -23,12 +22,12 @@ def get_arg_parser():
 
     # TODO define your own command line arguments
     parser.add_argument(
-        '-o',
-        '--option',
+        '-i', '--input',
         type=str,
+        metavar='FILE',
         action='store',
-        help='Some Option',
-        default='TheOptionValue',
+        help='The input file to parse',
+        default='parameters.tsv',
     )
     return parser
 

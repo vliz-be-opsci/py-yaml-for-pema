@@ -1,28 +1,59 @@
-# Use this file to describe the datamodel handled by this module
-# we recommend using abstract classes to achieve proper service and interface insulation
-from abc import ABC  # , abstractmethod
+import yaml
+import logging
 
 
-class MyModel(ABC):
-    """ Documentation should capture what this class is about. Mention mainly its responsibility and collaboration with others classes.
+log = logging.getLogger(__name__)
+
+
+class ParameterDescription():
+    """ Wrapper class representing the information structure read from the parameters file.
     """
 
-    def __init__(self, p1: str = "whatever"):
-        """ constructor
+    def __init__(self, ymls: str):
+        """ Creates the ParameterDescription model from the passed yml
 
-        :param p1: Documentation should focus on the meaning and constraints of the parameters to the constructor
+        :param ymls: the yaml-string holding the params description
         """
-        pass
+        self._ymls = ymls
+        self._model = ParameterDescription.yamlparse(ymls)
 
-    def my_method(self, p2: int = 0) -> float:
-        """ This method will do something described here.
-        The text can reference some class :class:`~MyModel` or a specific function :func:`~MyModel.my_method`
+    def __repr__(self):
+        return f'ParameterDescription("""{self._ymls}""")'
 
-        :param p2: argument meaning, purpose, expectations, constraints
-        :type p2: int
-        :returns: a description of the result
-        :rtype: float
-        :raises MyException: when something strange happens
-        """
-        assert 0 < p2 < 100, "parameter out of range"
-        return pow(p2/100, 2)
+    def __str__(self):
+        return self._ymls
+
+    def __iter__(self):
+        return iter(self._model['parameters'])
+
+
+    # todo have an 'about' property
+    # todo have a tojson() on the model
+    # todo have a template driven tohtml()
+    # todo have a validate(strict=True) method to check on some schema requirements .
+
+
+    @staticmethod
+    def yamlparse(content: str):
+        try:
+            return yaml.safe_load(content)
+        except (RuntimeError, Exception) as e:
+            log.error(f"Error while parsing the content\n--\n{content}")
+            log.error("-- end content")
+            log.exception(e)
+            raise e
+
+    @staticmethod
+    def read(src: str, prefix: str = '#= '):
+        # todo allow src to point to a url directly
+        fname = src
+        pfxlen = len(prefix)
+        content = ""
+        with open(fname, 'r') as fin:
+            for line in fin.readlines():
+                if line[:pfxlen] == prefix:
+                    content += line[pfxlen:]
+        return ParameterDescription(content)
+
+
+read = ParameterDescription.read
