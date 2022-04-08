@@ -1,0 +1,70 @@
+{%- macro input(name, label, descr, type, required, regex, minval, maxval) -%}
+{# creates <input> tag #}
+  {%- if label -%}
+  <label for="{{name}}">{{label}}:</label>
+  {%- endif %}
+  <br />
+  {% if type == 'integer' or type == 'float'-%}{% set type = 'number' %}{%- endif -%}
+
+  <input name="{{name}}"
+    {%- if descr             %} placeholder="{{descr}}"{% endif -%}
+    {%- if title             %} title="{{label}}"{%       endif -%}
+    {%- if type              %} type="{{type}}"{%         endif -%}
+    {%- if regex             %} pattern="{{regex}}"{%     endif -%}
+    {%- if required          %} required{%                endif -%}
+    {%- if minval is defined %} min="{{minval}}"{%        endif -%}
+    {%- if maxval is defined %} max="{{maxval}}"{%        endif -%}
+  >
+  <br />
+{%- endmacro -%}
+
+{%- macro select(name, label, options) -%}
+{# creates <select><options> tag #}
+  {%- if label -%}
+  <label for="{{name}}">{{label}}:</label>
+  {%- endif %}
+  <br />
+  <select name="{{name}}">
+  {%- for opt in options %}
+    <option value="{{opt.value}}">{{ opt.label | default(opt.value)}}</option>
+  {% endfor -%}
+  </select>
+  <br />
+{%- endmacro -%}
+
+{%- macro form_element(name, parm) -%}
+<span id={{name}} data-input='{{parm | tojson}}'>
+{# decides which form element to create and then does it #}
+  {%- set options = parm.validation | selectattr('value') | list -%}
+  {%- if options | count > 0 -%}
+    {{ select(
+        name,
+        parm.title,
+        options
+    ) }}
+  {%- else -%}
+    {%- set regex  = parm.validation | selectattr('regex') | map(attribute='regex') | list | last -%}
+    {%- set minval = parm.validation | selectattr('range') | map(attribute='range') | map(attribute='min') | list | min -%}
+    {%- set maxval = parm.validation | selectattr('range') | map(attribute='range') | map(attribute='max') | list | max -%}
+    {{ input(
+        name,
+        parm.title,
+        parm.description,
+        parm.type,
+        parm.required,
+        regex,
+        minval,
+        maxval,
+    ) }}
+  {%- endif -%}
+</span>
+{%- endmacro -%}
+
+<!-- parms ==
+{{parms}}
+-->
+<form>
+{%- for p in parms %}
+  {{ form_element(p, parms[p]) }}
+{% endfor -%}
+</form>

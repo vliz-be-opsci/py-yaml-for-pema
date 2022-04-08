@@ -10,8 +10,49 @@ One should start with an overarching structure
 
 
 after which we can just describe one parameter a time
-#=     firstparam:
-#=       - description: the first param
+#=     text:
+#=         title: "Some text"
+#=         description: "text only"
+simple  "text value"
+
+#=     count:
+#=         title: "The count"
+#=         description: "an integer field"
+#=         type: integer
+#=         required: no
+count  42
+
+#=     measurement:
+#=         title: "Measurement"
+#=         description: "a floating point value"
+#=         type: float
+#=         required: yes
+measurement: 3.14159265359
+
+#=     phonenr:
+#=         title: "Phone"
+#=         description: "+xx xxx xxx xxx xxx"
+#=         validation:
+#=           - regex: "\\+[0-9]([0-9 ])+"
+
+
+#=     choice:
+#=         title: "Pick the correct answer"
+#=         validation:
+#=           - value: A
+#=             label: answer A
+#=           - value: B
+#=           - value: other
+#=             label: none of the above
+
+
+#=     range:
+#=         title: "number 0-10"
+#=         type: integer
+#=         validation:
+#=           - range:
+#=                 min: 0
+#=                 max: 10
 
 
 Thanks for reading up to here!

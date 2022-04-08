@@ -3,6 +3,8 @@ import argparse
 import sys
 import logging
 import logging.config
+from yaml4parms import read
+
 
 log = logging.getLogger(__name__)
 
@@ -20,10 +22,30 @@ def get_arg_parser():
         help='location of the logging config (yml) to use',
     )
 
-    # TODO define your own command line arguments
     parser.add_argument(
-        '-i', '--input',
+        '-p', '--prefix',
         type=str,
+        metavar='PREFIX',
+        action='store',
+        help='The comment-prefix to recognise yml structure',
+        required=False,
+        default='#= ',
+    )
+
+    parser.add_argument(
+        'format',
+        nargs='?',
+        type=str,
+        metavar='FORMAT',
+        action='store',
+        help='The format in which to produce the parameters-description',
+        default='yml',
+    )
+
+    parser.add_argument(
+        'input',
+        type=str,
+        nargs='?',
         metavar='FILE',
         action='store',
         help='The input file to parse',
@@ -49,6 +71,9 @@ def main():
 
     log.info("The args passed to %s are: %s." % (sys.argv[0], args))
     log.debug("Some Logging")
+
+    pd = read(args.input, args.prefix)
+    print(pd.format(args.format))
 
 
 if __name__ == '__main__':
